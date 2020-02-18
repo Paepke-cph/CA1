@@ -42,12 +42,20 @@ public class MemberResource {
 
     @GET
     @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() {
         return Response
                 .ok(FACADE.getAll())
                 .build();
     }
 
+    @GET
+    @Path("/name/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getByName(@PathParam("name") String name) {
+        return Response.ok(FACADE.getByName(name)).build();
+
+    }
 }
 
 

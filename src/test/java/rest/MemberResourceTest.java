@@ -23,6 +23,7 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 
@@ -82,6 +83,16 @@ public class MemberResourceTest {
         } finally {
             em.close();
         }
+    }
+
+    @Test
+    public void testGetByName() {
+        String name = "Person1";
+        when().get("groupmembers/name/{name}", "Person1")
+                .then()
+                .statusCode(200)
+                .body("name[0]", equalTo("Person1"), "studentId[0]", equalTo(11111),  "levelColor[0]", equalTo("Red"));
+
     }
 
     @Test
