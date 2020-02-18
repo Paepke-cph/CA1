@@ -5,6 +5,7 @@ package rest;
  */
 
 import entity.Member;
+import org.hamcrest.Matchers;
 import rest.ApplicationConfig;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
@@ -86,9 +87,18 @@ public class MemberResourceTest {
     }
 
     @Test
-    public void testGetByName() {
+    public void testGetByName_with_invalid_name() {
+        String name = "This is not an actual name";
+        when().get("/groupmembers/name/{name}", name)
+                .then()
+                .statusCode(200)
+                .body("", Matchers.hasSize(0));
+    }
+
+    @Test
+    public void testGetByName_with_valid_name() {
         String name = "Person1";
-        when().get("groupmembers/name/{name}", "Person1")
+        when().get("groupmembers/name/{name}", name)
                 .then()
                 .statusCode(200)
                 .body("name[0]", equalTo("Person1"), "studentId[0]", equalTo(11111),  "levelColor[0]", equalTo("Red"));
