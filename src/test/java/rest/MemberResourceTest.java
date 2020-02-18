@@ -24,6 +24,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -68,12 +69,14 @@ public class MemberResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        r1 = new Member(); //("Some txt","More text");
-        r2 = new Member(); //("aaa","bbb");
+        r1 = new Member("Person1", 11111L, "Red");
+        r2 = new Member("Person2", 22222L, "Green");
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("Member.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Member.Truncate").executeUpdate();
             em.persist(r1);
+            em.getTransaction().commit();
+            em.getTransaction().begin();
             em.persist(r2);
             em.getTransaction().commit();
         } finally {
@@ -82,7 +85,16 @@ public class MemberResourceTest {
     }
 
     @Test
+    public void testGetAll() {
+        given().when().get("/groupmembers/all")
+                .then()
+                .statusCode(200)
+                .body("name", hasItems("Person1","Person2"));
+    }
+
+    @Test
     public void testServerIsUp() {
-        given().when().get("/member").then().statusCode(200);
+        given().when().get("/groupmembers").then().statusCode(200);
     }
 }
+
