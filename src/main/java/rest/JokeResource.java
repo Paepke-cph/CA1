@@ -6,19 +6,23 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import entity.dto.MemberDTO;
-import facade.MemberFacade;
+import entity.dto.JokeDTO;
+import facade.JokeFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/groupmembers")
-public class MemberResource {
+
+@Path("/joke")
+public class JokeResource {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
-    private static final MemberFacade FACADE =  MemberFacade.getMemberFacade(EMF);
+    private static final JokeFacade FACADE = JokeFacade.getJokeFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @GET
@@ -39,23 +43,28 @@ public class MemberResource {
     }
 
     @GET
-    @Path("/name/{name}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getByName(@PathParam("name") String name) {
-        return Response.ok(FACADE.getByName(name)).build();
-
+    public Response getById(@PathParam("id") long id) {
+        JokeDTO joke = FACADE.getById(id);
+        if(joke != null) {
+            return Response
+                    .ok(joke)
+                    .build();
+        } else {
+            return Response
+                    .noContent()
+                    .build();
+        }
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/random")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getById(@PathParam("id") Long id) {
-        MemberDTO member = FACADE.getById(id);
-        if(member != null) {
-            return Response.ok(member).build();
-        } else {
-            return Response.status(204).build();
-        }
+    public Response getRandomJoke() {
+        return Response
+                .ok(FACADE.getRandomJoke())
+                .build();
     }
 
     @GET
@@ -63,18 +72,8 @@ public class MemberResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response populate() {
         FACADE.populate();
-        return Response.ok().build();
+        return Response
+                .ok()
+                .build();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

@@ -9,12 +9,21 @@ public class MemberDTO {
     private String colorLevel;
 
     public MemberDTO(Member member) {
-        this.id = member.getId();
-        this.name = member.getName();
-        this.studentId = member.getStudentId();
-        this.colorLevel = member.getLevelColor();
+        if(member != null) {
+            this.id = member.getId();
+            this.name = member.getName();
+            this.studentId = member.getStudentId();
+            this.colorLevel = member.getLevelColor();
+        }
     }
 
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getName() {
         return name;
     }

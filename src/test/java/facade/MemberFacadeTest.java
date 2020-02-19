@@ -5,6 +5,7 @@ package facade;
  */
 
 import entity.Member;
+import entity.dto.MemberDTO;
 import utils.EMF_Creator;
 import utils.EMF_Creator.DbSelector;
 import utils.EMF_Creator.Strategy;
@@ -63,67 +64,76 @@ public class MemberFacadeTest {
     }
 
     @Test
+    public void testPopulate() {
+        int populationSize = 4;
+        memberfacade.populate();
+        int postCount = memberfacade.getCount();
+        assertEquals(populationSize, postCount);
+    }
+
+    @Test
     public void testCreateMember() {
         Member aNewMember = new Member("Person3", 33333L, "Yellow");
-        assertNull(aNewMember.getId());
-        memberfacade.create(aNewMember);
-        assertEquals(new Long(3L), aNewMember.getId());
+        MemberDTO dto = new MemberDTO(aNewMember);
+        assertNull(dto.getId());
+        memberfacade.create(dto);
+        assertEquals(new Long(3L), dto.getId());
     }
 
     @Test
     public void testGetById_with_invalid_id() {
         Long id = 12313141L;
-        Member member = memberfacade.getById(id);
+        MemberDTO member = memberfacade.getById(id);
         assertNull(member);
     }
 
     @Test
     public void testGetById_with_valid_id() {
         Long id = 1L;
-        Member member = memberfacade.getById(id);
+        MemberDTO member = memberfacade.getById(id);
         assertEquals("Person1", member.getName());
         assertEquals(new Long(11111L), member.getStudentId());
-        assertEquals("Red", member.getLevelColor());
+        assertEquals("Red", member.getColorLevel());
     }
 
     @Test
     public void testGetByName_with_multiple_members_found() {
         String name = "P%";
-        List<Member> members = memberfacade.getByName(name);
+        List<MemberDTO> members = memberfacade.getByName(name);
         assertEquals(2, members.size());
     }
 
     @Test
     public void testGetByName_with_invalid_name() {
         String name = "This should really not be a name in the db";
-        List<Member> members = memberfacade.getByName(name);
+        List<MemberDTO> members = memberfacade.getByName(name);
         assertTrue(members.isEmpty());
     }
 
     @Test
     public void testGetByName_with_valid_name() {
         String name = "Person1";
-        List<Member> members = memberfacade.getByName(name);
-        Member member = members.get(0);
+        List<MemberDTO> members = memberfacade.getByName(name);
+        MemberDTO member = members.get(0);
         assertEquals(1, members.size());
         assertEquals(name, member.getName());
         assertEquals(new Long(11111L), member.getStudentId());
-        assertEquals("Red", member.getLevelColor());
+        assertEquals("Red", member.getColorLevel());
     }
 
     @Test
     public void testGetAll() {
-        List<Member> members = memberfacade.getAll();
+        List<MemberDTO> members = memberfacade.getAll();
         assertEquals(2, members.size());
-        Member first = members.get(0);
-        Member second = members.get(1);
+        MemberDTO first = members.get(0);
+        MemberDTO second = members.get(1);
         assertEquals("Person1", first.getName());
         assertEquals(new Long(11111L), first.getStudentId());
-        assertEquals("Red", first.getLevelColor());
+        assertEquals("Red", first.getColorLevel());
 
         assertEquals("Person2", second.getName());
         assertEquals(new Long(22222L), second.getStudentId());
-        assertEquals("Green", second.getLevelColor());
+        assertEquals("Green", second.getColorLevel());
     }
 
     @Test

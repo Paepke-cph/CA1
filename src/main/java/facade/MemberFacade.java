@@ -5,7 +5,9 @@ package facade;
  */
 
 import entity.Member;
+import entity.dto.MemberDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -41,35 +43,46 @@ public class MemberFacade {
         return Integer.parseInt(entityManager.createQuery("SELECT count(m) FROM Member m", Long.class).getSingleResult().toString());
     }
 
-    public List<Member> getAll() {
-        List<Member> members = null;
-        EntityManager entityManager = getEntityManager();
-        return entityManager.createQuery("SELECT m FROM Member m", Member.class).getResultList();
+    public List<MemberDTO> toMemberDTOList(List<Member> members) {
+        List<MemberDTO> result = new ArrayList<>();
+        members.forEach(member -> {
+            result.add(new MemberDTO(member));
+        });
+        return result;
     }
 
-    public List<Member> getByName(String name) {
-        List<Member> members = null;
+    public List<MemberDTO> getAll() {
         EntityManager entityManager = getEntityManager();
-        members = entityManager.createNamedQuery("Member.findByName", Member.class).setParameter("name", name).getResultList();
-        return members;
+        List<Member> members = entityManager.createQuery("SELECT m FROM Member m", Member.class).getResultList();
+        return toMemberDTOList(members);
     }
 
-    public Member getById(long id) {
+    public List<MemberDTO> getByName(String name) {
         EntityManager entityManager = getEntityManager();
-        return entityManager.find(Member.class, id);
+        List<Member> members = entityManager.createNamedQuery("Member.findByName", Member.class).setParameter("name", name).getResultList();
+        return toMemberDTOList(members);
     }
 
-    public Member create(Member member) {
+    public MemberDTO getById(long id) {
+        EntityManager entityManager = getEntityManager();
+        Member member = entityManager.find(Member.class, id);
+        if(member != null) return new MemberDTO(member);
+        else return null;
+    }
+
+    public MemberDTO create(MemberDTO member) {
         EntityManager em = emf.createEntityManager();
+        Member persistMember = new Member(member.getName(), member.getStudentId(), member.getColorLevel());
         try {
             em.getTransaction().begin();
-            em.persist(member);
+            em.persist(persistMember);
             em.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             em.close();
         }
+        member.setId(persistMember.getId());
         return member;
     }
 
