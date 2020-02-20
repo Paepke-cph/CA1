@@ -1,8 +1,9 @@
 async function getMembers() {
-    let response = await fetch("api/groupmembers/all")
+    let response = await fetch("api/groupmembers/all");
     let data = await response.json();
     return data;
 }
+
 
 function makeTable() {
     var table = document.getElementById("memberTable");
