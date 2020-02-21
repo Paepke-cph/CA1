@@ -4,6 +4,10 @@
     width: 8em
 }
 
+.embedContainer{
+    padding: 30px;
+}
+
 .centered {
     text-align: center;
     align: center;
