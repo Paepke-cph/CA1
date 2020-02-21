@@ -91,10 +91,10 @@ public class MemberFacade {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Member.deleteAllRows").executeUpdate();
-            em.persist(new Member("Benjamin", 21313L, "Green"));
-            em.persist(new Member("Mads", 241939L, "Green"));
-            em.persist(new Member("Oscar", 1241511L, "Yellow"));
-            em.persist(new Member("Alexander", 2315111L, "Red"));
+            em.persist(new Member("Alexander", "cph-as485", "Red"));
+            em.persist(new Member("Benjamin", "cph-bp133", "Red"));
+            em.persist(new Member("Mads", "cph-mb346", "Red"));
+            em.persist(new Member("Oscar", "cph-ol38", "Red"));
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();

@@ -22,12 +22,12 @@ public class Member implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long studentId;
+    private String studentId;
     private String levelColor;
 
     public Member() {
     }
-    public Member(String name, Long studentId, String levelColor) {
+    public Member(String name, String studentId, String levelColor) {
         this.name = name;
         this.studentId = studentId;
         this.levelColor = levelColor;
@@ -41,8 +41,8 @@ public class Member implements Serializable {
     }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    public Long getStudentId() { return studentId; }
-    public void setStudentId(Long studentId) { this.studentId = studentId; }
+    public String getStudentId() { return studentId; }
+    public void setStudentId(String studentId) { this.studentId = studentId; }
     public String getLevelColor() { return levelColor; }
     public void setLevelColor(String levelColor) { this.levelColor = levelColor; }
 }

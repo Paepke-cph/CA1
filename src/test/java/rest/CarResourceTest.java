@@ -4,8 +4,7 @@ package rest;
  * version 1.0
  */
 
-import entity.Member;
-import org.hamcrest.Matchers;
+import entity.Car;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 
@@ -19,11 +18,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,11 +33,11 @@ import utils.EMF_Creator.DbSelector;
 import utils.EMF_Creator.Strategy;
 
 
-public class MemberResourceTest {
+public class CarResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
-    private static Member r1, r2;
+    private static Car r1, r2;
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
@@ -68,11 +68,11 @@ public class MemberResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        r1 = new Member("Person1", "11111", "Red");
-        r2 = new Member("Person2", "22222", "Green");
+        r1 = new Car(1000,"make1","model1",1000,"Owner1");
+        r2 = new Car(2000,"make2","model2",2000,"Owner2");
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("Member.Truncate").executeUpdate();
+            em.createNamedQuery("Car.Truncate").executeUpdate();
             em.persist(r1);
             em.getTransaction().commit();
             em.getTransaction().begin();
@@ -84,52 +84,37 @@ public class MemberResourceTest {
     }
 
     @Test
-    public void testGetByName_with_invalid_name() {
-        String name = "This is not an actual name";
-        when().get("/groupmembers/name/{name}", name)
-                .then()
-                .statusCode(200)
-                .body("", hasSize(0));
-    }
-
-    @Test
-    public void testGetByName_with_valid_name() {
-        String name = "Person1";
-        when().get("groupmembers/name/{name}", name)
-                .then()
-                .statusCode(200)
-                .body("name[0]", equalTo("Person1"), "studentId[0]", equalTo("11111"),  "colorLevel[0]", equalTo("Red"));
-
-    }
-
-    @Test
-    public void testGetById_with_invalid_id() {
-        Long id = 10313131L;
-        when().get("groupmembers/{id}", id)
-                .then()
-                .statusCode(204);
-    }
-
-    @Test
-    public void testGetById_with_valid_id() {
+    public void testGetById() {
         Long id = 1L;
-        when().get("groupmembers/{id}", id)
+        given().get("car/{id}", id)
                 .then()
                 .statusCode(200)
-                .body("name", equalTo("Person1"), "studentId", equalTo("11111"),  "colorLevel", equalTo("Red"));
+                .body("year", equalTo(1000),
+                        "make", equalTo("make1"),
+                        "model", equalTo("model1"),
+                        "price", equalTo(1000));
     }
 
     @Test
     public void testGetAll() {
-        given().when().get("/groupmembers/all")
+        given().get("car/all")
                 .then()
                 .statusCode(200)
-                .body("name", hasItems("Person1","Person2"));
+                .body("year", hasItems(1000,2000),
+                        "make", hasItems("make1","make2"),
+                        "model", hasItems("model1", "model2"),
+                        "price", hasItems(1000,2000));
+    }
+
+    @Test
+    public void testPopulate() {
+        given().get("car/populate")
+                .then()
+                .statusCode(200);
     }
 
     @Test
     public void testServerIsUp() {
-        given().when().get("/groupmembers").then().statusCode(200);
+        given().when().get("/car").then().statusCode(200);
     }
 }
-

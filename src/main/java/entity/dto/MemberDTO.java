@@ -5,7 +5,7 @@ import entity.Member;
 public class MemberDTO {
     private Long id;
     private String name;
-    private Long studentId;
+    private String studentId;
     private String colorLevel;
 
     public MemberDTO(Member member) {
@@ -32,11 +32,11 @@ public class MemberDTO {
         this.name = name;
     }
 
-    public Long getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(Long studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 

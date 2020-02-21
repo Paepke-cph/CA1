@@ -49,10 +49,10 @@ public class MemberFacadeTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Member.Truncate").executeUpdate();
-            em.persist(new Member("Person1", 11111L, "Red"));
+            em.persist(new Member("Person1", "11111", "Red"));
             em.getTransaction().commit(); // Just to make sure that member 1 is the first to be inserted into the db.
             em.getTransaction().begin();
-            em.persist(new Member("Person2", 22222L, "Green"));
+            em.persist(new Member("Person2", "22222", "Green"));
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -64,16 +64,8 @@ public class MemberFacadeTest {
     }
 
     @Test
-    public void testPopulate() {
-        int populationSize = 4;
-        memberfacade.populate();
-        int postCount = memberfacade.getCount();
-        assertEquals(populationSize, postCount);
-    }
-
-    @Test
     public void testCreateMember() {
-        Member aNewMember = new Member("Person3", 33333L, "Yellow");
+        Member aNewMember = new Member("Person3", "33333", "Yellow");
         MemberDTO dto = new MemberDTO(aNewMember);
         assertNull(dto.getId());
         memberfacade.create(dto);
@@ -92,7 +84,7 @@ public class MemberFacadeTest {
         Long id = 1L;
         MemberDTO member = memberfacade.getById(id);
         assertEquals("Person1", member.getName());
-        assertEquals(new Long(11111L), member.getStudentId());
+        assertEquals("11111", member.getStudentId());
         assertEquals("Red", member.getColorLevel());
     }
 
@@ -117,7 +109,7 @@ public class MemberFacadeTest {
         MemberDTO member = members.get(0);
         assertEquals(1, members.size());
         assertEquals(name, member.getName());
-        assertEquals(new Long(11111L), member.getStudentId());
+        assertEquals("11111", member.getStudentId());
         assertEquals("Red", member.getColorLevel());
     }
 
@@ -128,11 +120,11 @@ public class MemberFacadeTest {
         MemberDTO first = members.get(0);
         MemberDTO second = members.get(1);
         assertEquals("Person1", first.getName());
-        assertEquals(new Long(11111L), first.getStudentId());
+        assertEquals("11111", first.getStudentId());
         assertEquals("Red", first.getColorLevel());
 
         assertEquals("Person2", second.getName());
-        assertEquals(new Long(22222L), second.getStudentId());
+        assertEquals("22222", second.getStudentId());
         assertEquals("Green", second.getColorLevel());
     }
 

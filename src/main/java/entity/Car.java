@@ -4,75 +4,85 @@ package entity;
  * version 1.0
  */
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.*;
 
 
-public class Car {
+@Entity
+@Table(name = "Car")
+@NamedNativeQuery(name = "Car.Truncate", query = "TRUNCATE TABLE Car")
+@NamedQueries({
+    @NamedQuery(name = "Car.deleteAllRows", query = "DELETE FROM Car"),
+    @NamedQuery(name = "Car.getAll", query = "SELECT c FROM Car c")
+})
+public class Car implements Serializable {
 
-    private static Car instance;
-    private static EntityManagerFactory emf;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private int year;
+    private String make;
+    private String model;
+    private int price;
 
-    private Car() {
+    private String owner;
+
+    public Car() {}
+    public Car(int year, String make, String model, int price, String owner) {
+        this.year = year;
+        this.make = make;
+        this.model = model;
+        this.price = price;
+        this.owner = owner;
     }
 
-    /**
-     * @param _emf
-     * @return an instance of this facade class.
-     */
-    public static Car getCar(EntityManagerFactory _emf) {
-        if (instance == null) {
-            emf = _emf;
-            instance = new Car();
-        }
-        return instance;
+    public Long getId() {
+        return id;
     }
 
-    private EntityManager getEntityManager() {
-        return emf.createEntityManager();
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public long getCount() {
-        throw new UnsupportedOperationException();
+    public int getYear() {
+        return year;
     }
 
-    public List<Car> getAll() {
-        throw new UnsupportedOperationException();
+    public void setYear(int year) {
+        this.year = year;
     }
 
-    public List<Car> getByName(String name) {
-        throw new UnsupportedOperationException();
+    public String getMake() {
+        return make;
     }
 
-    public Car getById(long id) {
-        throw new UnsupportedOperationException();
+    public void setMake(String make) {
+        this.make = make;
     }
 
-    public Car create(Car car) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(car);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-        return car;
+    public String getModel() {
+        return model;
     }
 
-    public void populate() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.createNamedQuery("Movie.deleteAllRows").executeUpdate();
-            throw new UnsupportedOperationException();
-        } finally {
-            em.close();
-        }
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

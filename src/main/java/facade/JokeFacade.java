@@ -52,7 +52,6 @@ public class JokeFacade {
 
     public List<JokeDTO> getAll() {
         EntityManager entityManager = getEntityManager();
-        ArrayList<JokeDTO> result = new ArrayList<>();
         List<Joke> jokes = entityManager.createNamedQuery("Joke.getAll", Joke.class).getResultList();
         return toJokeDTOList(jokes);
     }
