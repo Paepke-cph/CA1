@@ -83,7 +83,12 @@ public class CarFacade {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Car.Truncate").executeUpdate();
-            em.persist(new Car());
+            em.persist(new Car(1997, "Ford", "E350", 3000, "Henry Ford"));
+            em.persist(new Car(1999, "Chevy", "Venture", 4900, "Billy Ray"));
+            em.persist(new Car(2000, "Chevy", "Venture", 5000, "John Denver"));
+            em.persist(new Car(1996, "Jeep", "Grand Cherokee", 4799, "No one"));
+            em.persist(new Car(2005, "Volvo", "V70", 44799, "Some swedish dude"));
+            em.getTransaction().commit();
         } finally {
             em.close();
         }

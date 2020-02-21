@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Our cool cars</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
+    <div id="filterBar">
+        <input id="filterYear" type="number" placeholder="Year">
+        <input id="filterMake" type="text" placeholder="Make">
+        <input id="filterModel" type="text" placeholder="Model">
+        <input id="filterPrice" type="number" placeholder="Price">
+        <input id="filterButton" type="button" value="Filter" onclick="filter()">
+        <input id="clearFilter" type="button" value="Clear filter" onclick="clearFilter()";
+    </div>
 
+    <table id="carTable">
+        <thead id="tableHead">
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+    <script src="js/cars.js"></script>
 </body>
 </html>
